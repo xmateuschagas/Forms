@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario</title>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+    
+
+    <style>
+        body {
+            font-family: Calibri, Tahoma, Arial
+        }
+
+        .TabControl {
+            width: 100%;
+            overflow: hidden;
+
+        }
+
+        .TabControl #header {
+            width: 100%;
+            border: solid 1px;
+            overflow: hidden;
+            cursor: hand
+        }
+
+        .TabControl #content {
+            width: 100%;
+            border: solid 1px;
+            overflow: hidden;
+            height: 100%;
+        }
+
+        .TabControl .abas {
+            display: inline;
+        }
+
+        .TabControl .abas li {
+            float: left
+        }
+
+        .aba {
+            width: 150px;
+            height: 30px;
+            border: solid 1px;
+            border-radius: 5px 5px 0 0;
+            text-align: center;
+            padding-top: 5px;
+            background: #02943a
+        }
+
+        .ativa {
+            width: 150px;
+            height: 30px;
+            border: solid 1 px;
+            border-radius: 5px 5px 0 0;
+            text-align: center;
+            padding-top: 5px;
+            background: #278b2c;
+        }
+
+        .ativa span,
+        .selected span {
+            color: #fff
+        }
+
+        .TabControl #content {
+            background: #06421f
+        }
+
+        .TabControl .conteudo {
+            width: 100%;
+            background: #0f8a65;
+            display: none;
+            height: 100%;
+            color: #fff
+        }
+
+
+
+        .selected {
+            width: 150px;
+            height: 30px;
+            border: solid 1 px;
+            border-radius: 5px 5px 0 0;
+            text-align: center;
+            padding-top: 5px;
+            background: #084923
+        }
+
+        .required:after {
+            content: " *";
+            color: red;
+        }
+
+        input[type=submit] {
+            background-color: #16995c;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        input[type=submit]:hover {
+            background-color: #45a049;
+        }
+    </style>
+
+</head>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $.getJSON('estados_cidades.json', function (data) {
+
+            var items = [];
+            var options = '<option value="">escolha um estado</option>';
+
+            $.each(data, function (key, val) {
+                options += '<option value="' + val.nome + '">' + val.nome + '</option>';
+            });
+            $("#estados").html(options);
+
+            $("#estados").change(function () {
+
+                var options_cidades = '';
+                var str = "";
+
+                $("#estados option:selected").each(function () {
+                    str += $(this).text();
+                });
+
+                $.each(data, function (key, val) {
+                    if (val.nome == str) {
+                        $.each(val.cidades, function (key_city, val_city) {
+                            options_cidades += '<option value="' + val_city + '">' + val_city + '</option>';
+                        });
+                    }
+                });
+
+                $("#cidades").html(options_cidades);
+
+            }).change();
+
+        });
+
+    });
+
+</script>
+<!--<script>
+    function TestaCPF(strCPF) {
+        var Soma;
+        var Resto;
+        Soma = 0;
+        if (strCPF == "00000000000") return false;
+
+        for (i = 1; i <= 9; i++) Soma = Soma + parseInt(strCPF.substring(i - 1, i)) * (11 - i);
+        Resto = (Soma * 10) % 11;
+
+        if ((Resto == 10) || (Resto == 11)) Resto = 0;
+        if (Resto != parseInt(strCPF.substring(9, 10))) return false;
+
+        Soma = 0;
+        for (i = 1; i <= 10; i++) Soma = Soma + parseInt(strCPF.substring(i - 1, i)) * (12 - i);
+        Resto = (Soma * 10) % 11;
+
+        if ((Resto == 10) || (Resto == 11)) Resto = 0;
+        if (Resto != parseInt(strCPF.substring(10, 11))) return false;
+        return true;
+    }
+    var strCPF = "12345678909";
+    alert(TestaCPF(strCPF));
+</script> --->
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#content div:nth-child(1)").show();
+        $(".abas li:first div").addClass("selected");
+        $(".aba").click(function () {
+            $(".aba").removeClass("selected");
+            $(this).addClass("selected");
+            var indice = $(this).parent().index();
+            indice++;
+            $("#content div").hide();
+            $("#content div:nth-child(" + indice + ")").show();
+        });
+
+        $(".aba").hover(
+            function () { $(this).addClass("ativa") },
+            function () { $(this).removeClass("ativa") }
+        );
+    });
+</script>
+
+<body>
+
+
+    <div class="TabControl">
+        <div id="header">
+            <ul class="abas">
+                <li>
+                    <div class="aba">
+                        <span>Cadastro Pessoal</span>
+                    </div>
+                </li>
+                <li>
+                    <div class="aba">
+                        <span>Curso/Polo</span>
+                    </div>
+                </li>
+
+            </ul>
+        </div>
+        <div id="content">
+            <div class="conteudo">
+                <fieldset>
+                    <legend>Dados Pessoais</legend>
+                    <table cellspacing="10">
+                        <tr>
+                            <td>
+                                <label>CPF:</label>
+                            </td>
+                            <td align="left">
+                                <input type="text" name="cpf" size="9" maxlength="9"> - <input type="text" name="cpf2"
+                                    size="2" maxlength="2">
+                            </td>
+                        </tr>
+                        <tr>
+
+                            <td>
+                                <label for="nome">Nome: </label>
+                            </td>
+                            <td align="left">
+                                <input type="text" name="nome" id="nome" required>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="email">E-mail: </label>
+                            </td>
+                            <td align="left">
+                                <input type="text" name="email">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="email">Confirmar E-mail: </label>
+                            </td>
+                            <td align="left">
+                                <input type="text" name="email">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="rg">RG: </label>
+                            </td>
+                            <td align="left">
+                                <input type="text" name="rg" size="13" maxlength="13">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Data de expedição: </label>
+                            </td>
+                            <td align="left">
+                                <input type="text" name="dia" size="2" maxlength="2" value="dd">
+                                <input type="text" name="mes" size="2" maxlength="2" value="mm">
+                                <input type="text" name="ano" size="4" maxlength="4" value="aaaa">
+                            </td>
+                        </tr>
+                        </tr>
+                        <td>
+                            <label for="OE">Orgão: </label>
+                        </td>
+                        <td align="left">
+                            <input type="text" name="OE">
+                        </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="UF">UF:</label>
+                            </td>
+                            <td align="left">
+                                <select id="UF" name="UF">
+                                    <option value="">Selecione</option>
+                                    <option value="AC">AC</option>
+                                    <option value="AL">AL</option>
+                                    <option value="AP">AP</option>
+                                    <option value="AM">AM</option>
+                                    <option value="BA">BA</option>
+                                    <option value="CE">CE</option>
+                                    <option value="DF">DF</option>
+                                    <option value="ES">ES</option>
+                                    <option value="GO">GO</option>
+                                    <option value="MA">MA</option>
+                                    <option value="MS">MS</option>
+                                    <option value="MT">MT</option>
+                                    <option value="MG">MG</option>
+                                    <option value="PA">PA</option>
+                                    <option value="PB">PB</option>
+                                    <option value="PR">PR</option>
+                                    <option value="PE">PE</option>
+                                    <option value="PI">PI</option>
+                                    <option value="RJ">RJ</option>
+                                    <option value="RN">RN</option>
+                                    <option value="RS">RS</option>
+                                    <option value="RO">RO</option>
+                                    <option value="RR">RR</option>
+                                    <option value="SC">SC</option>
+                                    <option value="SP">SP</option>
+                                    <option value="SE">SE</option>
+                                    <option value="TO">TO</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+
+                            <td>
+                                <label for="mae">Mãe: </label>
+                            </td>
+                            <td align="left">
+                                <input type="text" name="mae" id="mae" required>
+                            </td>
+                        </tr>
+                        <tr>
+
+                            <td>
+                                <label for="pai">Pai: </label>
+                            </td>
+                            <td align="left">
+                                <input type="text" name="pai" id="pai">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Nascimento: </label>
+                            </td>
+                            <td align="left">
+                                <input type="text" name="dia" size="2" maxlength="2" value="dd">
+                                <input type="text" name="mes" size="2" maxlength="2" value="mm">
+                                <input type="text" name="ano" size="4" maxlength="4" value="aaaa">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="Nacionalidade">Nacionalidade:</label>
+                            </td>
+                            <td align="left">
+                                <select id="Nacionalidade" name="Nacionalidade">
+                                    <option value=""></option>
+                                    <option value="brasileira">Brasileira</option>
+                                    <option value="estra">Estrangeira</option>
+                                    <option value="nat">Naturalizado</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="naturalidade">Naturalidade:</label>
+                            </td>
+                            <td align="left">
+                                <select id="naturalidade" name="naturalidade">
+                                    <option value=""></option>
+                                    <option value="AC">Acre</option>
+                                    <option value="AL">Alagoas</option>
+                                    <option value="AP">Amapá</option>
+                                    <option value="AM">Amazonas</option>
+                                    <option value="BA">Bahia</option>
+                                    <option value="CE">Ceará</option>
+                                    <option value="DF">Distrito Federal</option>
+                                    <option value="ES">Espírito Santo</option>
+                                    <option value="GO">Goiás</option>
+                                    <option value="MA">Maranhão</option>
+                                    <option value="MT">Mato Grosso</option>
+                                    <option value="MS">Mato Grosso do Sul</option>
+                                    <option value="MG">Minas Gerais</option>
+                                    <option value="PA">Pará</option>
+                                    <option value="PB">Paraíba</option>
+                                    <option value="PR">Paraná</option>
+                                    <option value="PE">Pernambuco</option>
+                                    <option value="PI">Piauí</option>
+                                    <option value="RJ">Rio de Janeiro</option>
+                                    <option value="RN">Rio Grande do Norte</option>
+                                    <option value="RS">Rio Grande do Sul</option>
+                                    <option value="RO">Rondônia</option>
+                                    <option value="RR">Roraima</option>
+                                    <option value="SC">Santa Catarina</option>
+                                    <option value="SP">São Paulo</option>
+                                    <option value="SE">Sergipe</option>
+                                    <option value="TO">Tocantins</option>
+                                    <option value="EX">Estrangeiro</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="sexo">Sexo:</label>
+                            </td>
+                            <td align="left">
+                                <select id="sexo" name="sexo">
+                                    <option value=""></option>
+                                    <option value="masc">Masculino</option>
+                                    <option value="fem">Feminino</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="civil">Estado civil:</label>
+                            </td>
+                            <td align="left">
+                                <select id="civil" name="civil">
+                                    <option value=""></option>
+                                    <option value="Solteiro">Solteiro</option>
+                                    <option value="Casado">Casado</option>
+                                    <option value="Divorciado">Divorciado</option>
+                                    <option value="Viúvo">Viúvo</option>
+                                    <option value="Outros">Outros</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="Deficiência">Tipo de Deficiência:</label>
+                            </td>
+                            <td align="left">
+                                <select id="Deficiência" name="Deficiência">
+                                    <option value=""></option>
+                                    <option value="Cegueira">Cegueira</option>
+                                    <option value="Baixa Visão">Baixa Visão</option>
+                                    <option value="Surdez">Surdez</option>
+                                    <option value="Deficiência auditiva">Deficiência auditiva</option>
+                                    <option value="Deficiência Física">Deficiência Física</option>
+                                    <option value="Deficiência Múltipla">Deficiência Múltipla</option>
+                                    <option value="Deficiência Mental">Deficiência Mental</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="Raça">Raça:</label>
+                            </td>
+                            <td align="left">
+                                <select id="Raça" name="Raça">
+                                    <option value=""></option>
+                                    <option value="Branca">Branca</option>
+                                    <option value="Preta">Preta</option>
+                                    <option value="Parda">Parda</option>
+                                    <option value="Amarela">Amarela</option>
+                                    <option value="Indígena">Indígena</option>
+                                    <option value="Amarela">Amarela</option>
+                                    <option value="Não Declarada">Não Declarada</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
+                <fieldset>
+                    <legend>Localização</legend>
+                    <table cellspacing="10">
+                        <tr>
+                            <td>
+                                <label for="Tipo">Tipo:</label>
+                            </td>
+                            <td align="left">
+                                <select id="Tipo" name="Tipo">
+                                    <option value=""></option>
+                                    <option value="Alameda">Alameda</option>
+                                    <option value="Avenida">Avenida</option>
+                                    <option value="Distrito">Distrito</option>
+                                    <option value="Estrada">Estrada</option>
+                                    <option value="Fazenda">Fazenda</option>
+                                    <option value="Loteamento">Loteamento</option>
+                                    <option value="Morro">Morro</option>
+                                    <option value="Recanto">Recanto</option>
+                                    <option value="Residencial">Residencial</option>
+                                    <option value="Rodovia">Rodovia</option>
+                                    <option value="Rua">Rua</option>
+                                    <option value="Sítio">Sítio</option>
+                                    <option value="Travessa">Travessa</option>
+                                    <option value="Trevo">Trevo</option>
+                                    <option value="Via">Via</option>
+                                    <option value="Viela">Viela</option>
+                                    <option value="Vila">Vila</option>
+                                </select>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <label for="endereco">Endereço:</label>
+                            </td>
+                            <td align="left">
+                                <input type="text" name="endereco">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="numero">numero: </label>
+                            </td>
+                            <td align="left">
+                                <input type="text" name="numero">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="complemento">Complemento: </label>
+                            </td>
+                            <td align="left">
+                                <input type="text" name="complemento">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="bairro">Bairro: </label>
+                            </td>
+                            <td align="left">
+                                <input type="text" name="bairro">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="cep">CEP: </label>
+                            </td>
+                            <td align="left">
+                                <input type="text" name="cep" size="5" maxlength="5"> - <input type="text" name="cep2"
+                                    size="3" maxlength="3">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="estado">Estado:</label>
+                            </td>
+                            <td align="left">
+                                <select id="estados">
+                                    <option value=""></option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="cidade">Cidade: </label>
+                            </td>
+                            <td align="left">
+                            </select>
+                            <select id="cidades">
+                            </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="telefone">Telefone: </label>
+                            </td>
+                            <td align="left">
+                                <input type="text" name="telefone">
+                            </td>
+                        </tr>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="outrotelefone">Outro telefone para contato: </label>
+                            </td>
+                            <td align="left">
+                                <input type="text" name="outrotelefone">
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
+                <fieldset>
+                    <legend>Acesso ao sistema</legend>
+                    <table cellspacing="10">
+                        <tr>
+                            <td>
+                                <label for="email">E-mail: </label>
+                            </td>
+                            <td align="left">
+                                <input type="text" name="email">
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <label for="login">Login de usuário: </label>
+                            </td>
+                            <td align="left">
+                                <input type="text" name="login">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="pass">Senha: </label>
+                            </td>
+                            <td align="left">
+                                <input type="password" name="pass">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="passconfirm">Confirme a senha: </label>
+                            </td>
+                            <td align="left">
+                                <input type="password" name="passconfirm">
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
+
+            </div>
+            
+        </div>
+    </div>
+    <input type="submit" value="Enviar">
+   
+</body>
+
+</html>
